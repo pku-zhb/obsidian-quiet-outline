@@ -9,6 +9,7 @@ import {
     saveDelaySecondsToMs,
 } from "./utils/data-manager";
 import { assertType } from "./utils/helper";
+import { eventBus } from "./utils/event-bus";
 
 type AutoExpandMode =
       "only-expand"
@@ -33,6 +34,7 @@ interface QuietOutlineSettings {
     label_direction: Direction;
     drag_modify: boolean;
     locate_by_cursor: boolean;
+    sticky_current_heading: boolean;
     show_popover_key: ModifierKey;
     persist_md_states: boolean;
     persist_md_cursor: boolean;
@@ -97,6 +99,7 @@ const DEFAULT_SETTINGS: QuietOutlineSettings = {
     label_direction: "left",
     drag_modify: false,
     locate_by_cursor: false,
+    sticky_current_heading: true,
     show_popover_key: "ctrlKey",
     persist_md_states: true,
     persist_md_cursor: true,
@@ -347,6 +350,19 @@ class SettingTab extends PluginSettingTab {
                     .onChange(async (value) => {
                         this.plugin.settings.locate_by_cursor = value;
                         await this.plugin.saveSettings();
+                    }),
+            );
+
+        new Setting(container)
+            .setName(t("Sticky Current Heading"))
+            .setDesc(t("Show the current nearest heading at the top of Markdown views while scrolling"))
+            .addToggle((toggle) =>
+                toggle
+                    .setValue(this.plugin.settings.sticky_current_heading)
+                    .onChange(async (value) => {
+                        this.plugin.settings.sticky_current_heading = value;
+                        await this.plugin.saveSettings();
+                        eventBus.trigger("sticky-heading-change");
                     }),
             );
 

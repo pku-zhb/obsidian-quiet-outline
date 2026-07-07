@@ -41,6 +41,8 @@ export default {
     "Disabled": 'Disabled',
     "Locate By Cursor": 'Locate By Cursor',
     "Show Popover on hover": 'Show Popover on hover',
+    "Sticky Current Heading": "Sticky Current Heading",
+    "Show the current nearest heading at the top of Markdown views while scrolling": "Show the current nearest heading at the top of Markdown views while scrolling",
     "Press functional key and move cursor to heading": 'Press functional key and move cursor to heading',
     "Disable": 'Disable',
     "Highlight and Auto expand postion will be determined by cursor position": "Highlight and Auto expand postion will be determined by cursor position",

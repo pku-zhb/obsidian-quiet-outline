@@ -7,13 +7,13 @@
         </div>
         <NSlider
             v-if="store.levelSwitch"
+            class="quiet-outline-level-slider"
             :value="level"
             :on-update:value="switchLevel"
             :marks="marks"
             step="mark"
             :min="0"
             :max="5"
-            style="margin: 4px 0"
             :format-tooltip="formatTooltip"
         />
         <code v-if="pattern">{{ matchCount }} {{ t("result(s):") }} </code>
@@ -77,7 +77,7 @@ function formatTooltip(value: number): string {
     return "No expand";
 }
 
-const { theme, themeOverrides, iconColor, primaryColor, rainbowColors, containerStyle, biDi } = useOutlineTheme();
+const { theme, themeOverrides, iconColor, rainbowColors, containerStyle, biDi } = useOutlineTheme();
 const { level, switchLevel, expanded, modifyExpandKeys, getDefaultLevel, autoExpand } = useOutlineExpand(plugin);
 const { data, nodeProps, locateIdx, resetLocated, selectedKeys } = useOutlineTree({
     plugin,
@@ -171,7 +171,11 @@ defineExpose({
 
 <style>
 .quiet-outline .n-tree {
-    padding-top: 5px;
+    padding-top: var(--size-2-2);
+}
+
+.quiet-outline .quiet-outline-level-slider {
+    margin: var(--size-2-2) 0;
 }
 
 /* RTL language support */
@@ -195,7 +199,7 @@ defineExpose({
     content: "";
     position: absolute;
     height: 100%;
-    right: 8px;
+    right: var(--size-4-2);
 }
 
 :is(
@@ -206,7 +210,6 @@ defineExpose({
     .quiet-outline .level-6 .n-tree-node-indent:first-child
 )::after {
     border-right: var(--nav-indentation-guide-width) solid v-bind("rainbowColors.h1");
-    /* border-right: 2px solid rgb(253, 139, 31, 0.6); */
 }
 
 :is(
@@ -216,7 +219,6 @@ defineExpose({
     .quiet-outline .level-6 .n-tree-node-indent:nth-child(2)
 )::after {
     border-right: var(--nav-indentation-guide-width) solid v-bind("rainbowColors.h2");
-    /* border-right: 2px solid rgb(255, 223, 0, 0.6); */
 }
 
 :is(
@@ -225,7 +227,6 @@ defineExpose({
     .quiet-outline .level-6 .n-tree-node-indent:nth-child(3)
 )::after {
     border-right: var(--nav-indentation-guide-width) solid v-bind("rainbowColors.h3");
-    /* border-right: 2px solid rgb(7, 235, 35, 0.6); */
 }
 
 :is(
@@ -233,17 +234,10 @@ defineExpose({
     .quiet-outline .level-6 .n-tree-node-indent:nth-child(4)
 )::after {
     border-right: var(--nav-indentation-guide-width) solid v-bind("rainbowColors.h4");
-    /* border-right: 2px solid rgb(45, 143, 240, 0.6); */
 }
 
 .quiet-outline .level-6 .n-tree-node-indent:nth-child(5)::after {
     border-right: var(--nav-indentation-guide-width) solid v-bind("rainbowColors.h5");
-    /* border-right: 2px solid rgb(188, 1, 226, 0.6); */
-}
-
-/* located heading*/
-.n-tree-node.located p {
-    color: v-bind(primaryColor);
 }
 
 /* adjust indent */
@@ -255,7 +249,7 @@ defineExpose({
     margin-right: 0;
 }
 .quiet-outline .n-tree .n-tree-node .n-tree-node-content .n-tree-node-content__prefix > *:last-child {
-    margin-right: 8px;
+    margin-right: var(--size-4-2);
 }
 .n-tree-node-switcher__icon {
     display: flex;

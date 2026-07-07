@@ -5,6 +5,7 @@ export type QuietOutlineEventMap = {
     "levelchange": [level: number | "inc" | "dec"];
     "cursorchange": [docChanged: boolean];
     "active-fileview-change": [fileView: FileView | null];
+    "sticky-heading-change": [];
     "canvas-change": [];
     "canvas-selection-change": [selection: Set<CanvasComponent>];
 };

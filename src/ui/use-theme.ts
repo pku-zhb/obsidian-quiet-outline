@@ -23,9 +23,6 @@ export function useOutlineTheme() {
     });
 
     const iconColor = computed(() => {
-        if (store.dark) {
-            return { color: "var(--icon-color)" };
-        }
         return { color: "var(--icon-color)" };
     });
 
@@ -37,10 +34,10 @@ export function useOutlineTheme() {
                 primaryColorHover: color,
             },
             Slider: {
-                handleSize: "10px",
+                handleSize: "var(--size-4-3)",
                 fillColor: color,
                 fillColorHover: color,
-                dotBorderActive: `2px solid ${color}`,
+                dotBorderActive: `var(--size-2-1) solid ${color}`,
             },
             Tree: {
                 nodeTextColor: "var(--nav-item-color)",
@@ -57,10 +54,10 @@ export function useOutlineTheme() {
                 primaryColorHover: color,
             },
             Slider: {
-                handleSize: "10px",
+                handleSize: "var(--size-4-3)",
                 fillColor: color,
                 fillColorHover: color,
-                dotBorderActive: `2px solid ${color}`,
+                dotBorderActive: `var(--size-2-1) solid ${color}`,
             },
             Tree: {
                 nodeTextColor: "var(--nav-item-color)",
@@ -112,12 +109,12 @@ export function useOutlineTheme() {
             const h5Color = store.dark ? store.theme.h5ColorDark : store.theme.h5ColorLight;
             const h6Color = store.dark ? store.theme.h6ColorDark : store.theme.h6ColorLight;
 
-            style['--h1-color'] = h1Color;
-            style['--h2-color'] = h2Color;
-            style['--h3-color'] = h3Color;
-            style['--h4-color'] = h4Color;
-            style['--h5-color'] = h5Color;
-            style['--h6-color'] = h6Color;
+            style['--h1-color'] = normalizeCustomFontColor(h1Color, store.dark);
+            style['--h2-color'] = normalizeCustomFontColor(h2Color, store.dark);
+            style['--h3-color'] = normalizeCustomFontColor(h3Color, store.dark);
+            style['--h4-color'] = normalizeCustomFontColor(h4Color, store.dark);
+            style['--h5-color'] = normalizeCustomFontColor(h5Color, store.dark);
+            style['--h6-color'] = normalizeCustomFontColor(h6Color, store.dark);
         }
 
         return style;
@@ -132,7 +129,6 @@ export function useOutlineTheme() {
         theme,
         themeOverrides,
         iconColor,
-        primaryColor,
         rainbowColors,
         containerStyle,
         biDi,
@@ -163,6 +159,10 @@ function cssColorToRgba(color: string) {
 
     const [r, g, b, a255] = ctx.getImageData(0, 0, 1, 1).data;
     return `rgba(${r}, ${g}, ${b}, ${a255 / 255})`;
+}
+
+function normalizeCustomFontColor(color: string, isDark: boolean) {
+    return isDark && color.toLowerCase() === "#000000" ? "inherit" : color;
 }
 
 function hexToRGB(hex: string) {

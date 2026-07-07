@@ -27,6 +27,7 @@ import { stringifyHeaders } from "@/utils/heading";
 import { eventBus } from "@/utils/event-bus";
 
 let plugin: QuietOutline;
+let stickyHeading: StickyHeadingBar | null = null;
 export const MD_DATA_FILE = "markdown-states.json";
 
 export interface MarkdownHeading extends Heading {
@@ -59,12 +60,14 @@ export class MarkDownNav extends Nav {
     async setHeaders(): Promise<void> {
         const headings = await this.getHeaders();
         store.headers = headings;
+        stickyHeading?.refreshFromCurrentPosition(true);
     }
 
     async updateHeaders(): Promise<void> {
         const headings = await this.getHeaders();
         store.modifyKeys = calcModifies(store.headers, headings);
         store.headers = headings;
+        stickyHeading?.refreshFromCurrentPosition(true);
     }
 
     async jump(index: number) {
@@ -118,6 +121,16 @@ export class MarkDownNav extends Nav {
     }
 
     async onload() {
+        stickyHeading = new StickyHeadingBar(this);
+        this.register(() => {
+            stickyHeading?.destroy();
+            stickyHeading = null;
+        });
+        this.registerEvent(
+            eventBus.on("sticky-heading-change", () => {
+                stickyHeading?.refreshFromCurrentPosition(true);
+            }),
+        );
         this.registerEvent(eventBus.on("cursorchange", handleCursorChange));
         this.registerDomEvent(
             this.view.contentEl,
@@ -125,6 +138,9 @@ export class MarkDownNav extends Nav {
             handleScroll,
             true,
         );
+        activeWindow.setTimeout(() => {
+            stickyHeading?.refreshFromCurrentPosition(true);
+        });
     }
 
     async onunload() { }
@@ -402,8 +418,156 @@ export class MarkDownNav extends Nav {
 
 }
 
+class StickyHeadingBar {
+    private readonly container: HTMLElement;
+    private currentIndex: number | null = null;
+
+    constructor(private readonly nav: MarkDownNav) {
+        const host = this.nav.view.containerEl.querySelector<HTMLElement>(
+            ".view-header-title-container",
+        ) || this.nav.view.contentEl;
+
+        host.classList.add("quiet-outline-sticky-heading-host");
+        this.container = host.createDiv({
+            cls: "quiet-outline-sticky-current-heading",
+        });
+        this.container.setAttribute("aria-hidden", "true");
+
+        this.container.addEventListener("click", (event) => {
+            const target = event.target;
+            if (!(target instanceof HTMLElement)) return;
+
+            const crumb = target.closest<HTMLButtonElement>(
+                ".quiet-outline-sticky-current-heading__crumb",
+            );
+            if (!crumb || !this.container.contains(crumb)) return;
+
+            event.preventDefault();
+            event.stopPropagation();
+
+            const headingIndex = Number(crumb.dataset.headingIndex);
+            if (!Number.isInteger(headingIndex)) return;
+
+            void this.nav.jumpWhenClick(headingIndex).then(() => {
+                activeWindow.setTimeout(() => {
+                    this.refreshFromCurrentPosition(true);
+                }, 250);
+            });
+        });
+
+        this.hide();
+    }
+
+    destroy(): void {
+        const host = this.container.parentElement;
+        this.container.remove();
+        host?.classList.remove("quiet-outline-sticky-heading-host");
+    }
+
+    refreshFromCurrentPosition(fromScroll: boolean): void {
+        if (!plugin.settings.sticky_current_heading) {
+            this.hide();
+            return;
+        }
+
+        const isSourcemode = this.nav.view.getMode() === "source";
+        const scrollEl = this.scrollElement(isSourcemode);
+        if (fromScroll && scrollEl && scrollEl.scrollTop <= 4) {
+            this.hide();
+            return;
+        }
+
+        const line = currentLineFromCursor(this.nav.view)
+            ?? currentLine(this.nav.view, fromScroll, isSourcemode);
+        const index = nearestHeading(line);
+        this.update(index);
+    }
+
+    private scrollElement(isSourcemode: boolean): HTMLElement | null {
+        return this.nav.view.contentEl.querySelector(
+            isSourcemode ? ".cm-scroller" : ".markdown-preview-view",
+        );
+    }
+
+    update(index: number | undefined): void {
+        if (!plugin.settings.sticky_current_heading || index === undefined) {
+            this.hide();
+            return;
+        }
+
+        const header = store.headers[index];
+        if (!header) {
+            this.hide();
+            return;
+        }
+
+        this.currentIndex = index;
+        this.renderBreadcrumb(index);
+        this.container.classList.add("is-visible");
+        this.container.setAttribute("aria-hidden", "false");
+    }
+
+    hide(): void {
+        this.currentIndex = null;
+        this.container.classList.remove("is-visible");
+        this.container.setAttribute("aria-hidden", "true");
+    }
+
+    private renderBreadcrumb(index: number): void {
+        this.container.empty();
+
+        headingTrail(index).forEach((headingIndex, trailIndex) => {
+            if (trailIndex > 0) {
+                this.container.createSpan({
+                    cls: "quiet-outline-sticky-current-heading__separator",
+                    text: "/",
+                });
+            }
+
+            const heading = store.headers[headingIndex];
+            const crumb = this.container.createEl("button", {
+                cls: "quiet-outline-sticky-current-heading__crumb",
+                attr: {
+                    type: "button",
+                    "data-heading-index": String(headingIndex),
+                    title: `H${heading.level} ${heading.title}`,
+                },
+            });
+            if (headingIndex === index) {
+                crumb.classList.add("is-current");
+            }
+
+            crumb.createSpan({
+                cls: "quiet-outline-sticky-current-heading__level",
+                text: `H${heading.level}`,
+            });
+            crumb.createSpan({
+                cls: "quiet-outline-sticky-current-heading__title",
+                text: heading.title,
+            });
+        });
+    }
+}
+
 function getHeader(idx: number) {
     return store.headers[idx] as MarkdownHeading;
+}
+
+function headingTrail(index: number): number[] {
+    const current = store.headers[index];
+    if (!current) return [];
+
+    const trail = [index];
+    let level = current.level;
+    for (let i = index - 1; i >= 0 && level > 1; i--) {
+        const heading = store.headers[i];
+        if (heading.level < level) {
+            trail.push(i);
+            level = heading.level;
+        }
+    }
+
+    return trail.reverse();
 }
 
 function handleCursorChange(docChanged: boolean) {
@@ -413,11 +577,13 @@ function handleCursorChange(docChanged: boolean) {
         return;
     }
 
+    stickyHeading?.refreshFromCurrentPosition(false);
+
     if (plugin.settings.locate_by_cursor) {
         // fix conflict with cursor-change and scroll both triggering highlight heading change
         plugin.block_scroll();
 
-        const current = currentLine(false, true);
+        const current = currentLine((plugin.navigator as MarkDownNav).view, false, true);
         const index = nearestHeading(current);
         if (index === undefined) return;
 
@@ -446,8 +612,20 @@ function isMarkdownStateEnabled(state: MarkdownStateKey): boolean {
     }
 }
 
-function currentLine(fromScroll: boolean, isSourcemode: boolean) {
-    const markdownView = (plugin.navigator as MarkDownNav).view;
+function currentLineFromCursor(markdownView: MarkdownView): number | null {
+    if (markdownView.getMode() !== "source" || !markdownView.editor) {
+        return null;
+    }
+
+    const cursor = markdownView.editor.getCursor("from");
+    if (!cursor || !Number.isFinite(cursor.line)) {
+        return null;
+    }
+
+    return cursor.line;
+}
+
+function currentLine(markdownView: MarkdownView, fromScroll: boolean, isSourcemode: boolean) {
     // there could be no editor on a markdown view when this view is initializing
     if (!markdownView.editor) {
         return 0;
@@ -556,9 +734,13 @@ function _handleScroll(evt: Event) {
     const isSourcemode =
         (plugin.navigator as MarkDownNav).view.getMode() === "source";
 
-    const current = currentLine(true, isSourcemode);
+    const current = currentLine((plugin.navigator as MarkDownNav).view, true, isSourcemode);
     const index = nearestHeading(current);
-    if (index === undefined) return;
+    if (index === undefined) {
+        stickyHeading?.hide();
+        return;
+    }
 
+    stickyHeading?.refreshFromCurrentPosition(true);
     plugin.outlineView?.vueInstance.onPosChange(index);
 }

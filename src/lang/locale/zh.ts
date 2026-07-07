@@ -33,6 +33,8 @@ export default {
     "Disabled": '关闭自动展开',
     "Locate By Cursor": "定位到光标处",
     "Highlight and Auto expand postion will be determined by cursor position": "高亮和自动展开位置将由光标位置决定",
+    "Sticky Current Heading": "悬浮当前标题",
+    "Show the current nearest heading at the top of Markdown views while scrolling": "滚动 Markdown 笔记时，在页面顶部显示最近的当前标题",
     "Show Popover on hover": '鼠标悬停在标题时显示笔记内容',
     "Press functional key and move cursor to heading": '按住功能键，移动光标到标题处',
     "Disable": '关闭',

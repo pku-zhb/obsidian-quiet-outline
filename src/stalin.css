@@ -5,7 +5,7 @@
     --custom-font-family: inherit;
     --custom-font-weight: inherit;
     --custom-line-height: 1.6em;
-    --custom-line-gap: 0px;
+    --custom-line-gap: 0;
     --h1-color: inherit;
     --h2-color: inherit;
     --h3-color: inherit;
@@ -22,7 +22,7 @@
 
 /* Title spacing */
 .quiet-outline-confirm-modal .modal-title {
-    margin-bottom: 8px;
+    margin-bottom: var(--size-4-2);
 }
 
 /* Paragraph spacing (supports multi-paragraph messages) */
@@ -32,22 +32,22 @@
 
 /* Spacing between paragraphs */
 .quiet-outline-confirm-modal p + p {
-    margin-top: 10px;
+    margin-top: var(--size-4-2);
 }
 
 /* ConfirmModal: right-aligned buttons with spacing + vertically centered icons */
 .quiet-outline-confirm-modal .quiet-outline-confirm-modal__buttons {
     display: flex;
     justify-content: flex-end;
-    gap: 10px;
-    margin-top: 14px;
+    gap: var(--size-4-2);
+    margin-top: var(--size-4-3);
 }
 
 /* Make buttons feel consistent and aligned */
 .quiet-outline-confirm-modal .quiet-outline-confirm-modal__buttons button {
     display: inline-flex;
     align-items: center;
-    min-height: 30px;
+    min-height: var(--input-height);
 }
 
 /* Add spacing between icon and label, and keep the icon vertically centered */
@@ -55,7 +55,7 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    margin-right: 6px;
+    margin-right: var(--size-2-3);
 }
 
 /* Fix SVG baseline alignment so it appears visually centered inside the button */
@@ -65,17 +65,17 @@
 
 .quiet-outline-tabs {
     display: flex;
-    border-bottom: 1px solid var(--background-modifier-border);
-    margin-bottom: 16px;
+    border-bottom: var(--border-width) solid var(--background-modifier-border);
+    margin-bottom: var(--size-4-4);
 }
 
 .quiet-outline-tabs button {
     background: none;
     border: none;
-    padding: 8px 16px;
+    padding: var(--size-4-2) var(--size-4-4);
     cursor: pointer;
     color: var(--text-muted);
-    border-bottom: 2px solid transparent;
+    border-bottom: var(--size-2-1) solid transparent;
     transition: all 0.2s ease;
     font-size: var(--font-ui-medium);
 }
@@ -96,7 +96,7 @@
 }
 
 .quiet-outline-tab-content {
-    min-height: 400px;
+    min-height: min(60vh, calc(var(--input-height) * 14));
 }
 
 .quiet-outline-setting-group {
@@ -105,7 +105,7 @@
 }
 
 .quiet-outline-setting-group .setting-item:not(:first-child) {
-    padding-left: 32px;
+    padding-left: var(--size-4-8);
 }
 
 .quiet-outline .n-tree {
@@ -115,7 +115,7 @@
 }
 
 .quiet-outline .n-tree-node-wrapper {
-    padding: 0px;
+    padding: 0;
 }
 
 .quiet-outline .n-tree-node.n-tree-node--selectable {
@@ -126,7 +126,7 @@
 /*  heading line spacing */
 .quiet-outline .n-tree-node .n-tree-node-content {
     line-height: var(--custom-line-height);
-    min-height: 10px;
+    min-height: var(--nav-item-size);
     margin-bottom: var(--custom-line-gap);
 }
 
@@ -164,27 +164,28 @@
 .quiet-outline
     .n-tree.n-tree--block-line
     .n-tree-node:not(.n-tree-node--disabled):hover {
-    color: var(--nav-item-color-active);
-    background-color: var(--nav-item-background-active);
-    font-weight: var(--nav-item-weight-active);
+    color: var(--nav-item-color-hover);
+    background-color: var(--nav-item-background-hover);
+    font-weight: var(--nav-item-weight-hover);
 }
 
 /* 功能栏 */
 .quiet-outline .function-bar {
     display: flex;
     align-items: center;
-    padding: 0px;
-    margin-bottom: 5px;
+    gap: var(--size-2-2);
+    padding: var(--size-2-1);
+    margin-bottom: var(--size-2-2);
 }
 
 .quiet-outline .function-bar .n-button {
-    margin-right: 5px;
+    margin-right: 0;
     text-align: center;
 }
 
 .quiet-outline .function-bar .n-input {
     flex: 1;
-    min-width: 10px;
+    min-width: 0;
 }
 
 /* avoid <input> style overriding by theme */
@@ -202,15 +203,13 @@
 
 /* 图标大小 */
 .quiet-outline .n-button__icon {
-    --n-icon-size: 22px;
-    font-size: 22px;
+    --n-icon-size: var(--icon-size);
+    font-size: var(--icon-size);
 }
 
 .quiet-outline .n-tree-node-content .n-input {
     .n-input-wrapper {
-        padding: 0px;
-        /*padding-left: 4px;
-        padding-right: 4px;*/
+        padding: 0;
     }
     .n-input__input-el {
         line-height: var(--custom-line-height);
@@ -220,23 +219,137 @@
 }
 
 .quiet-outline code {
-    /* color:var(--text-color-code, var(--code-normal)); */
-    font-weight: bold;
-    /* font-size: var(--font-size-code, var(--code-size)); */
+    padding: 0 var(--size-2-1);
+    color: var(--code-normal, var(--text-normal));
     font-family: var(--font-monospace);
-    background-color: var(--code-background);
-    border-radius: var(--radius-s);
+    font-size: var(--code-size, var(--font-smaller));
+    font-weight: var(--font-medium);
+    background-color: var(--code-background, var(--background-modifier-hover));
+    border-radius: var(--code-radius, var(--radius-s));
 }
 
 .quiet-outline a.tag {
+    padding: var(--tag-padding-y, 0.1em) var(--tag-padding-x, 0.5em);
+    color: var(--tag-color, var(--text-accent));
     white-space: nowrap;
-    padding: 0.2em 0.6em;
+    background-color: var(--tag-background, transparent);
+    border: var(--tag-border-width, var(--border-width)) solid
+        var(--tag-border-color, transparent);
+    border-radius: var(--tag-radius, var(--radius-s));
+    text-decoration: none;
+}
+.quiet-outline a.tag:hover {
+    color: var(--tag-color-hover, var(--text-accent-hover, var(--text-accent)));
+    background-color: var(--tag-background-hover, var(--background-modifier-hover));
+    border-color: var(--tag-border-color-hover, var(--tag-border-color, transparent));
 }
 .quiet-outline a:not(.tag) {
     color: var(--link-external-color);
 }
 .quiet-outline span.internal-link {
     color: var(--link-color);
+}
+
+.quiet-outline-sticky-heading-host {
+    gap: var(--size-2-3);
+}
+
+.view-header-title-container.quiet-outline-sticky-heading-host .view-header-title {
+    flex: 0 0 auto;
+    min-width: 0;
+    max-width: 45%;
+}
+
+.quiet-outline-sticky-current-heading {
+    display: none;
+    align-items: center;
+    gap: var(--size-2-1);
+    flex: 0 8 auto;
+    min-width: 0;
+    max-width: var(--file-line-width);
+    margin-inline: var(--size-2-2);
+    padding-inline: var(--size-2-1);
+    overflow: hidden;
+}
+
+.quiet-outline-sticky-current-heading.is-visible {
+    display: flex;
+}
+
+.view-header .quiet-outline-sticky-current-heading__crumb {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--size-2-2);
+    flex: 0 8 auto;
+    min-width: 0;
+    max-width: 100%;
+    min-height: calc(var(--icon-size) + var(--size-2-2));
+    padding: 0 var(--size-2-2);
+    color: var(--text-muted);
+    background-color: transparent;
+    border: none;
+    border-radius: var(--radius-m);
+    box-shadow: none;
+    cursor: pointer;
+}
+
+.view-header .quiet-outline-sticky-current-heading__crumb.is-current {
+    flex: 0 1 auto;
+    max-width: 100%;
+    color: var(--text-accent);
+    font-weight: var(--font-semibold);
+}
+
+.view-header
+    .quiet-outline-sticky-current-heading__crumb.is-current
+    .quiet-outline-sticky-current-heading__title {
+    font-weight: var(--font-semibold);
+}
+
+.view-header .quiet-outline-sticky-current-heading__crumb:hover {
+    background-color: var(--background-modifier-hover);
+}
+
+.view-header .quiet-outline-sticky-current-heading__crumb.is-current:hover {
+    color: var(--text-accent);
+}
+
+.view-header .quiet-outline-sticky-current-heading__crumb:focus-visible {
+    box-shadow: 0 0 0 var(--size-2-1) var(--background-primary),
+        0 0 0 var(--size-2-2) var(--interactive-accent);
+}
+
+.quiet-outline-sticky-current-heading__level {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 auto;
+    min-height: calc(var(--font-ui-smaller) + var(--size-2-3));
+    padding: 0 var(--size-2-2);
+    color: var(--text-on-accent);
+    font-family: var(--font-interface);
+    font-size: var(--font-ui-smaller);
+    font-weight: var(--font-semibold);
+    line-height: var(--line-height-tight);
+    background-color: var(--interactive-accent);
+    border-radius: var(--radius-s);
+}
+
+.quiet-outline-sticky-current-heading__title {
+    overflow: hidden;
+    color: inherit;
+    font-size: var(--font-ui-small);
+    font-weight: var(--font-medium);
+    line-height: var(--line-height-tight);
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.quiet-outline-sticky-current-heading__separator {
+    flex: 0 0 auto;
+    color: var(--text-faint);
+    font-size: var(--font-ui-small);
+    line-height: var(--line-height-tight);
 }
 
 .quiet-outline mark {
@@ -248,16 +361,12 @@
 /* 对不同级别标题进行设置 */
 /* ===================== */
 .n-tree .n-tree-node-switcher {
-    height: 0px;
+    height: 0;
 }
 
 /* 设置除一级标题之外的所有标题 */
 /* setting h2-h6 */
 .quiet-outline [class*="level-"]:not(.level-1) .n-tree-node-content {
-    /*
-    color: red;
-    font-weight:bold;
-    */
     font-size: 1em;
 }
 
@@ -287,20 +396,26 @@
 }
 
 /* location */
-.n-tree-node.located {
-    font-weight: bold !important;
+.quiet-outline .n-tree-node.located {
+    color: var(--text-accent);
+    font-weight: var(--font-semibold) !important;
     :is(a) {
-        font-weight: bold !important;
+        font-weight: var(--font-semibold) !important;
     }
 }
-/* .n-tree-node code {
-    font-weight: 500 !important;
-  } */
-.n-tree-node.located code {
-    font-weight: 1000 !important;
+.quiet-outline .n-tree-node.located .n-tree-node-content {
+    color: var(--text-accent);
+    background-color: transparent;
+    border-inline-start: none;
 }
-.n-tree-node.located mjx-math {
-    font-weight: bold;
+.quiet-outline .n-tree-node.located .n-tree-node-content p {
+    color: inherit;
+}
+.quiet-outline .n-tree-node.located code {
+    font-weight: var(--font-semibold) !important;
+}
+.quiet-outline .n-tree-node.located mjx-math {
+    font-weight: var(--font-semibold);
 }
 
 .n-tree.n-tree--block-line
@@ -311,11 +426,11 @@
 
 .n-tree.n-tree--block-line:focus
     .n-tree-node:not(.n-tree-node--disabled).n-tree-node--selected {
-    box-shadow: 0 0 0 2px var(--background-modifier-border-focus);
+    box-shadow: 0 0 0 var(--size-2-1) var(--background-modifier-border-focus);
 }
 
 .view-content:has(.quiet-outline) {
-    padding-bottom: 0px;
+    padding-bottom: 0;
 }
 
 .quiet-outline .n-tree.n-tree--block-node.n-tree--block-line {
@@ -334,7 +449,7 @@
 }
 .quiet-outline .n-tree {
     overflow: auto;
-    padding-inline: 2px;
+    padding-inline: var(--size-2-1);
 }
 
 /*remove 'no data'*/
