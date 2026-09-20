@@ -134,24 +134,30 @@
     margin: 0;
 }
 
-/* ellipsis */
+/* Keep long headings inside the outline while allowing natural wrapping. */
 .quiet-outline .n-tree.ellipsis {
     overflow-x: hidden;
 }
 
 .quiet-outline .n-tree.ellipsis .n-tree-node .n-tree-node-content p {
     overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+    overflow-wrap: anywhere;
+    text-overflow: clip;
+    white-space: normal;
+    word-break: normal;
 }
 
 .quiet-outline .n-tree.ellipsis .n-tree-node-content__text {
     overflow: hidden;
+    min-width: 0;
+    white-space: normal;
 }
 
 .quiet-outline .n-tree.ellipsis .n-tree-node-content {
     overflow: hidden;
     flex: 1;
+    min-width: 0;
+    max-width: 100%;
 }
 
 .quiet-outline
