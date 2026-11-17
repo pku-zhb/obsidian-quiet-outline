@@ -257,41 +257,41 @@
 }
 
 .quiet-outline-sticky-heading-host {
-    gap: var(--size-2-3);
+    gap: var(--size-2-2);
 }
 
-.view-header-title-container.quiet-outline-sticky-heading-host .view-header-title {
-    flex: 0 0 auto;
-    min-width: 0;
-    max-width: 45%;
+/* Flatten both groups into one flex row: every folder, filename, and heading
+   gets the same share of the available width. Separators keep their own width. */
+.view-header-title-container.quiet-outline-sticky-heading-host .view-header-title-parent,
+.quiet-outline-sticky-current-heading.is-visible {
+    display: contents;
 }
 
 .quiet-outline-sticky-current-heading {
     display: none;
-    align-items: center;
-    gap: var(--size-2-1);
-    flex: 0 8 auto;
-    min-width: 0;
-    max-width: var(--file-line-width);
-    margin-inline: var(--size-2-2);
-    padding-inline: var(--size-2-1);
-    overflow: hidden;
 }
 
-.quiet-outline-sticky-current-heading.is-visible {
-    display: flex;
+.view-header-title-container.quiet-outline-sticky-heading-host .view-header-breadcrumb,
+.view-header-title-container.quiet-outline-sticky-heading-host .view-header-title,
+.view-header-title-container.quiet-outline-sticky-heading-host .quiet-outline-sticky-current-heading__crumb {
+    flex: 1 1 0;
+    min-width: 0;
+    max-width: none;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .view-header .quiet-outline-sticky-current-heading__crumb {
-    display: inline-flex;
-    align-items: center;
-    gap: var(--size-2-2);
-    flex: 0 8 auto;
-    min-width: 0;
-    max-width: 100%;
+    display: block;
     min-height: calc(var(--icon-size) + var(--size-2-2));
     padding: 0 var(--size-2-2);
     color: var(--text-muted);
+    font-family: var(--font-interface);
+    font-size: var(--font-ui-small);
+    font-weight: var(--font-medium);
+    line-height: var(--line-height-tight);
+    text-align: start;
     background-color: transparent;
     border: none;
     border-radius: var(--radius-m);
@@ -300,15 +300,7 @@
 }
 
 .view-header .quiet-outline-sticky-current-heading__crumb.is-current {
-    flex: 0 1 auto;
-    max-width: 100%;
     color: var(--text-accent);
-    font-weight: var(--font-semibold);
-}
-
-.view-header
-    .quiet-outline-sticky-current-heading__crumb.is-current
-    .quiet-outline-sticky-current-heading__title {
     font-weight: var(--font-semibold);
 }
 
@@ -316,39 +308,9 @@
     background-color: var(--background-modifier-hover);
 }
 
-.view-header .quiet-outline-sticky-current-heading__crumb.is-current:hover {
-    color: var(--text-accent);
-}
-
 .view-header .quiet-outline-sticky-current-heading__crumb:focus-visible {
     box-shadow: 0 0 0 var(--size-2-1) var(--background-primary),
         0 0 0 var(--size-2-2) var(--interactive-accent);
-}
-
-.quiet-outline-sticky-current-heading__level {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    flex: 0 0 auto;
-    min-height: calc(var(--font-ui-smaller) + var(--size-2-3));
-    padding: 0 var(--size-2-2);
-    color: var(--text-on-accent);
-    font-family: var(--font-interface);
-    font-size: var(--font-ui-smaller);
-    font-weight: var(--font-semibold);
-    line-height: var(--line-height-tight);
-    background-color: var(--interactive-accent);
-    border-radius: var(--radius-s);
-}
-
-.quiet-outline-sticky-current-heading__title {
-    overflow: hidden;
-    color: inherit;
-    font-size: var(--font-ui-small);
-    font-weight: var(--font-medium);
-    line-height: var(--line-height-tight);
-    text-overflow: ellipsis;
-    white-space: nowrap;
 }
 
 .quiet-outline-sticky-current-heading__separator {

@@ -25,6 +25,7 @@ import { t } from "@/lang/helper";
 import { HeadingUpdater } from "@/utils/update-heading-links";
 import { stringifyHeaders } from "@/utils/heading";
 import { eventBus } from "@/utils/event-bus";
+import { installFolderBreadcrumbNavigation } from "@/utils/folder-breadcrumb-navigation";
 
 let plugin: QuietOutline;
 let stickyHeading: StickyHeadingBar | null = null;
@@ -421,6 +422,7 @@ export class MarkDownNav extends Nav {
 class StickyHeadingBar {
     private readonly container: HTMLElement;
     private currentIndex: number | null = null;
+    private readonly removeFolderNavigation: () => void;
 
     constructor(private readonly nav: MarkDownNav) {
         const host = this.nav.view.containerEl.querySelector<HTMLElement>(
@@ -428,6 +430,7 @@ class StickyHeadingBar {
         ) || this.nav.view.contentEl;
 
         host.classList.add("quiet-outline-sticky-heading-host");
+        this.removeFolderNavigation = installFolderBreadcrumbNavigation(this.nav.view, host);
         this.container = host.createDiv({
             cls: "quiet-outline-sticky-current-heading",
         });
@@ -460,6 +463,7 @@ class StickyHeadingBar {
 
     destroy(): void {
         const host = this.container.parentElement;
+        this.removeFolderNavigation();
         this.container.remove();
         host?.classList.remove("quiet-outline-sticky-heading-host");
     }
@@ -537,14 +541,7 @@ class StickyHeadingBar {
                 crumb.classList.add("is-current");
             }
 
-            crumb.createSpan({
-                cls: "quiet-outline-sticky-current-heading__level",
-                text: `H${heading.level}`,
-            });
-            crumb.createSpan({
-                cls: "quiet-outline-sticky-current-heading__title",
-                text: heading.title,
-            });
+            crumb.textContent = `H${heading.level} ${heading.title}`;
         });
     }
 }

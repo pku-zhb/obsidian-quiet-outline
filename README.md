@@ -145,3 +145,16 @@ For markdown-rendering, open `Markdown Render` option in setting panel.
 ## Buy me a coffee
 If you enjoy this plugin, feel free to buy me a coffee.
 <a href="https://www.buymeacoffee.com/thtree"><img src="https://img.buymeacoffee.com/button-api/?text=Buy me a coffee&emoji=&slug=thtree&button_colour=40DCA5&font_colour=ffffff&font_family=Cookie&outline_colour=000000&coffee_colour=FFDD00" /></a>
+
+
+## Local breadcrumb navigation
+
+The current-heading header gives every visible folder, filename, and heading an
+equal share of the available width. Long labels truncate with an ellipsis; heading
+buttons keep their full text in a tooltip and use a plain `H2 Title` prefix.
+
+When Notebook Navigator is available, an ordinary left click on a folder
+breadcrumb selects that folder through its public navigation API and reveals its
+sidebar. Without the API, the native folder click remains available. Modified
+clicks, dragging, folder context menus, filename rename, and heading jumps retain
+their existing behavior. Unloading Quiet Outline removes the click interception.
